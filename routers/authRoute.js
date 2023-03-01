@@ -10,7 +10,8 @@ const {
     refreshTokenHandler, 
     logout,
     updatePassword,
-    getCurrentUser
+    getCurrentUser,
+    forget_password
 } = require("../controller/UserCtrl");
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
@@ -20,6 +21,8 @@ const router = require("express").Router();
 router.post("/register", createUser);
 router.post("/login", loginUserCtrl);
 router.put("/password", authMiddleware, updatePassword);
+router.post("/forgot-password", forget_password);
+router.post("/reset-password/:token", forget_password);
 
 router.get("/refreshtoken", refreshTokenHandler);
 router.get("/alluser", getAllUser);

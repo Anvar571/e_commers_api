@@ -5,6 +5,8 @@ const ValidationMongodb = require("../utils/Validation");
 const generateRefreshToken = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 const { hashPassword } = require("../modules/bcrypt");
+const sendEmail = require("./emailCtrl");
+const crypto = require("crypto");
 
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -219,6 +221,43 @@ const updatePassword = asyncHandler(async (req, res) => {
   }
 });
 
+const forget_password = asyncHandler(async (req, res) => {
+  const {email} = req.body;
+  const user = await UserModel.findOne({email});
+  if (!user) throw new Error("User not fount");
+  try {
+    const token = await user.createResetToken();
+    await user.save();
+    const resetUrl = `Salo, Iltimos yuborilgan linkni bosing <a href="http://localhost:8000/api/auth/reset-password/${token}">Click here</a>`;
+    const data = {
+      to: "taxahef965@pubpng.com",
+      text: "hey user",
+      subject: "Forget password link",
+      html: resetUrl
+    }
+    sendEmail(data)
+    res.json(token);
+  } catch (error) {
+    throw new Error(error)
+  }
+})
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const {password} = req.body;
+  const token = req.params;
+  const hashedToken = crypto.createHash("sha256").update(token).digest('hex');
+  const user = await UserModel.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: {$gt: Date.now()},
+  })
+  if (!user) throw new Error("Token expired, please try again");
+  user.password = password;
+  user.passwordResetToken = undefined
+  user.passwordResetExpires = undefined
+  await user.save();
+  res.json(user);
+})
+
 module.exports = {
   createUser,
   loginUserCtrl,
@@ -232,4 +271,6 @@ module.exports = {
   refreshTokenHandler,
   logout,
   updatePassword,
+  forget_password,
+  resetPassword
 };
