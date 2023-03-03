@@ -4,7 +4,7 @@ const { generateToken } = require("../config/jwtToken");
 const ValidationMongodb = require("../utils/Validation");
 const generateRefreshToken = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
-const { hashPassword } = require("../modules/bcrypt");
+const { hashPassword, comparePassword } = require("../modules/bcrypt");
 const sendEmail = require("./emailCtrl");
 const crypto = require("crypto");
 
@@ -55,6 +55,45 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
 
   throw new Error("Invalid Email and password");
 });
+
+// login admin
+const adminLogin = asyncHandler(async (req, res) => {
+  const {email, password} = req.body;
+  try {
+    const user = await UserModel.findOne({email});
+    if (!user) throw new Error("Email or password exists");
+    const refreshtoken = await generateRefreshToken(user?._id);
+
+    const hashPass = await comparePassword(user.password, password);
+    if (!hashPass) throw new Error("Admin password in correct");
+
+    res.cookie("refreshtoken", refreshtoken, {
+      httpOnly: true,
+      maxAge: 72*60*60*1000
+    })
+
+    await UserModel.findByIdAndUpdate(
+      user?._id,
+      {
+        refreshtoken
+      },
+      {new: true}
+    )
+
+    res.json({
+      message: "Loged in admin",
+      _id: user?._id,
+      name: user?.name,
+      email: user?.email,
+      password: user?.password,
+      mobile: user?.mobile,
+      token: generateToken(user?._id),
+    })
+
+  } catch (error) {
+    throw new Error(error)
+  }
+})
 
 // get all user
 const getAllUser = asyncHandler(async (req, res) => {
@@ -272,5 +311,6 @@ module.exports = {
   logout,
   updatePassword,
   forget_password,
-  resetPassword
+  resetPassword,
+  adminLogin
 };

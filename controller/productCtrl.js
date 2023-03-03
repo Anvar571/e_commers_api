@@ -2,7 +2,9 @@ const asyncHandler = require("express-async-handler");
 const { default: slugify } = require("slugify");
 const productModel = require("../models/productModel");
 const UserModel = require("../models/UserModel");
+const cloudinaryUploading = require("../utils/cloudImage");
 const ValidationMongodb = require("../utils/Validation");
+const fs = require("fs");
 
 const ProductCreate = asyncHandler(async (req, res) => {
   try {
@@ -32,7 +34,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
     // sort
     if (req.query.sort) {
       let sortBy = req.query.sort.split(",").join(" ");
-      queryProduct = queryProduct.sort(sortBy)
+      queryProduct = queryProduct.sort(sortBy);
     } else {
       queryProduct = queryProduct.sort("-createdAt");
     }
@@ -40,7 +42,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
     // limiting
     if (req.query.fields) {
       let fields = req.query.fields.split(",").join(" ");
-      queryProduct = queryProduct.select(fields)
+      queryProduct = queryProduct.select(fields);
     } else {
       queryProduct = queryProduct.select("-__v");
     }
@@ -51,11 +53,10 @@ const getAllProduct = asyncHandler(async (req, res) => {
     let skip = (page - 1) * limit;
 
     queryProduct = queryProduct.skip(skip).limit(limit);
-    if (req.query.page){
+    if (req.query.page) {
       const countDocument = await productModel.countDocuments();
-      if (skip >= countDocument) throw new Error("This page is not exist")
+      if (skip >= countDocument) throw new Error("This page is not exist");
     }
-
 
     const product = await queryProduct;
     res.json({ product });
@@ -66,7 +67,6 @@ const getAllProduct = asyncHandler(async (req, res) => {
 
 const getOneProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  console.log(id);
 
   try {
     const product = await productModel.findOne({ slug: id });
@@ -79,8 +79,8 @@ const getOneProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
-    if (req.body.title){
-        req.body.slug = slugify(req.body.title);
+    if (req.body.title) {
+      req.body.slug = slugify(req.body.title);
     }
     const updateProduct = await productModel.findByIdAndUpdate(id, req.body, {
       new: true,
@@ -102,8 +102,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
 });
 
 const addWishList = asyncHandler(async (req, res) => {
-  const {_id} = req.user;
-  const {producId} = req.body;
+  const { _id } = req.user;
+  const { producId } = req.body;
   try {
     const user = await UserModel.findById(_id);
     const alreadyadded = user.wishlist.find((id) => id.toString() === producId);
@@ -111,66 +111,113 @@ const addWishList = asyncHandler(async (req, res) => {
       const user = await UserModel.findByIdAndUpdate(
         _id,
         {
-          $pull: {wishlist: producId}
+          $pull: { wishlist: producId },
         },
-        {new: true}
-      )
-      res.json({user});
-    }else {
+        { new: true }
+      );
+      res.json({ user });
+    } else {
       const user = await UserModel.findByIdAndUpdate(
         _id,
         {
-          $push: {wishlist: producId}
+          $push: { wishlist: producId },
         },
 
-        {new: true}
-      )
-      res.json({user})
+        { new: true }
+      );
+      res.json({ user });
     }
   } catch (error) {
     throw new Error(error);
   }
-})
+});
 
-const rating = asyncHandler(async (req,res) => {
-  const {_id} = req.user;
-  const {star, producId} = req.body;
-  const product = await productModel.findById(producId);
-  let alreadyRated = product.ratings.find((userId) => userId.postedby.toString() === _id.toString());
+const ratingProduct = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { star, producId, comment } = req.body;
+  try {
+    const product = await productModel.findById(producId);
+    let alreadyRated = product.ratings.find(
+      (userId) => userId.postedby.toString() === _id.toString()
+    );
 
-  if (alreadyRated) {
-    const updateRating = await productModel.updateOne(
-      {
-        ratings: {$elemMatch: alreadyRated}
-      },
-      {
-        $set: {"ratings.$.star": star},
-      },
-      {
-        new: true
-      }
-    )
-    res.json({
-      updateRating
-    });
-  }else {
-    const rateProd = await productModel.findByIdAndUpdate(
+    if (alreadyRated) {
+      const updateRating = await productModel.updateOne(
+        {
+          ratings: { $elemMatch: alreadyRated },
+        },
+        {
+          $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+        },
+        {
+          new: true,
+        }
+      );
+    } else {
+      const rateProd = await productModel.findByIdAndUpdate(
+        producId,
+        {
+          $push: {
+            ratings: {
+              star,
+              comment,
+              postedby: _id,
+            },
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    }
+
+    const getAllRatings = await productModel.findById(producId);
+    let totalRatings = getAllRatings.ratings.length;
+    let ratingsum = getAllRatings.ratings.reduce(
+      (prev, curr) => prev + curr.star,
+      0
+    );
+
+    let actualRating = Math.round(ratingsum / totalRatings);
+    let productF = await productModel.findByIdAndUpdate(
       producId,
       {
-        $push: {
-          ratings: {
-            star,
-            postedby: _id
-          }
-        }
-      }, {
-        new: true
-      }
-    )
-    res.json(rateProd);
+        totalRaiting: actualRating,
+      },
+      { new: true }
+    );
+    return res.json({ productF });
+  } catch (error) {
+    throw new Error(error);
   }
-})
+});
 
+const uploadProdImage = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const uploader = (path) => cloudinaryUploading(path, "images");
+    const urls = [];
+    const files = req.files;
+    for (const file of files) {
+      const { path } = file;
+      const newPath = await uploader(path);
+      urls.push(newPath);
+    }
+
+    const findProduct = await productModel.findByIdAndUpdate(id, {
+      images: urls.map(
+        (file) => {
+          return file;
+        },
+        { new: true }
+      ),
+    });
+
+    res.json({ findProduct });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 const searchProduct = asyncHandler(async (req, res) => {});
 
@@ -182,5 +229,6 @@ module.exports = {
   deleteProduct,
   searchProduct,
   addWishList,
-  rating
+  ratingProduct,
+  uploadProdImage,
 };

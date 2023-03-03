@@ -6,5 +6,6 @@ routers.use("/blog", require("./blogRoute"));
 routers.use("/category", require("./categoryRoute"));
 routers.use("/blogcategory", require("./blogCategoryRoute"));
 routers.use("/brand", require("./brandRoute"));
+routers.use("/cupon", require("./authRoute"));
 
 module.exports = routers  

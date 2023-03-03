@@ -206,3 +206,62 @@ PUT /api/product/wishlist 200 557 - 58.777 ms Thu, 02 Mar 2023 21:55:43 GMT appl
 PUT /api/product/wishlist 200 531 - 10.482 ms Thu, 02 Mar 2023 21:55:50 GMT application/json
 PUT /api/product/wishlist 200 557 - 43.425 ms Thu, 02 Mar 2023 21:55:54 GMT application/json
 PUT /api/product/wishlist 200 584 - 18.124 ms Thu, 02 Mar 2023 21:56:23 GMT application/json
+PUT /api/product/rating 200 442 - 77.776 ms Fri, 03 Mar 2023 09:33:28 GMT application/json
+PUT /api/product/rating 200 109 - 22.290 ms Fri, 03 Mar 2023 09:33:39 GMT application/json
+PUT /api/product/rating 200 109 - 54.850 ms Fri, 03 Mar 2023 10:01:42 GMT application/json
+GET /api/product/all 200 2960 - 32.934 ms Fri, 03 Mar 2023 10:03:37 GMT application/json
+POST /api/auth/register 200 369 - 207.027 ms Fri, 03 Mar 2023 10:10:27 GMT application/json
+POST /api/auth/login 200 387 - 127.137 ms Fri, 03 Mar 2023 10:11:10 GMT application/json
+POST /api/product/create 500 1214 - 4.220 ms Fri, 03 Mar 2023 10:14:26 GMT application/json
+POST /api/auth/login 200 390 - 99.985 ms Fri, 03 Mar 2023 10:17:42 GMT application/json
+POST /api/product/create 500 1214 - 1.465 ms Fri, 03 Mar 2023 10:18:06 GMT application/json
+POST /api/product/create 200 397 - 16.353 ms Fri, 03 Mar 2023 10:19:12 GMT application/json
+PUT /api/product/rating 200 465 - 14.554 ms Fri, 03 Mar 2023 10:20:28 GMT application/json
+POST /api/auth/login 200 387 - 106.340 ms Fri, 03 Mar 2023 10:21:53 GMT application/json
+PUT /api/product/rating 200 582 - 15.605 ms Fri, 03 Mar 2023 10:22:36 GMT application/json
+GET /api/auth/6401c793283c8e7d34c36528 500 823 - 24.900 ms Fri, 03 Mar 2023 10:25:12 GMT -
+GET /api/auth/6401c793283c8e7d34c36528 200 518 - 24.863 ms Fri, 03 Mar 2023 10:25:38 GMT -
+PUT /api/product/rating 200 109 - 54.112 ms Fri, 03 Mar 2023 10:26:30 GMT application/json
+PUT /api/product/all 500 238 - 15.556 ms Fri, 03 Mar 2023 10:26:43 GMT application/json
+GET /api/product/all 200 3519 - 22.356 ms Fri, 03 Mar 2023 10:26:51 GMT application/json
+GET /api/product/all 200 3519 - 39.658 ms Fri, 03 Mar 2023 10:32:48 GMT application/json
+POST /api/auth/register 200 371 - 200.980 ms Fri, 03 Mar 2023 10:37:22 GMT application/json
+POST /api/auth/login 200 389 - 116.027 ms Fri, 03 Mar 2023 10:37:35 GMT application/json
+PUT /api/auth/rating 404 1113 - 2.228 ms Fri, 03 Mar 2023 10:38:12 GMT application/json
+PUT /api/product/rating 200 692 - 19.603 ms Fri, 03 Mar 2023 10:38:23 GMT application/json
+PUT /api/product/rating 500 373 - 77.946 ms Fri, 03 Mar 2023 10:45:32 GMT application/json
+PUT /api/product/rating 500 373 - 27.408 ms Fri, 03 Mar 2023 10:46:48 GMT application/json
+PUT /api/product/rating 200 705 - 60.118 ms Fri, 03 Mar 2023 10:47:29 GMT application/json
+PUT /api/product/upload/63fbc8024a9f8aa88a4891b5 - - - - ms Fri, 03 Mar 2023 14:29:45 GMT multipart/form-data; boundary=--------------------------187290133098667578062421
+POST /api/product/upload/63fbc8024a9f8aa88a4891b5 - - - - ms Fri, 03 Mar 2023 14:32:29 GMT multipart/form-data; boundary=--------------------------918855822947149942673128
+POST /api/product/blog/6400ebd8a626dccdbb164e4b 404 1113 - 4.730 ms Fri, 03 Mar 2023 14:38:57 GMT multipart/form-data; boundary=--------------------------541723147250465085675010
+POST /api/blog/upload/6400ebd8a626dccdbb164e4b 200 28 - 42.094 ms Fri, 03 Mar 2023 14:39:19 GMT multipart/form-data; boundary=--------------------------703228234386121711929966
+POST /api/blog/upload/6400ebd8a626dccdbb164e4b 200 28 - 7.724 ms Fri, 03 Mar 2023 14:41:15 GMT multipart/form-data; boundary=--------------------------852589858776801588768012
+POST /api/pategory/upload/63fbc8024a9f8aa88a4891b5 404 1131 - 7.147 ms Fri, 03 Mar 2023 14:55:35 GMT multipart/form-data; boundary=--------------------------943261398427082883247810
+POST /api/pategory/upload/63fbc8024a9f8aa88a4891b5 404 1131 - 1.229 ms Fri, 03 Mar 2023 14:56:03 GMT multipart/form-data; boundary=--------------------------273399713326383633976667
+POST /api/pategory/upload/63fbc8024a9f8aa88a4891b5 404 1131 - 0.664 ms Fri, 03 Mar 2023 14:56:06 GMT multipart/form-data; boundary=--------------------------562014604557268226034421
+PUT /api/pategory/upload/63fbc8024a9f8aa88a4891b5 404 1131 - 0.915 ms Fri, 03 Mar 2023 14:56:10 GMT multipart/form-data; boundary=--------------------------505755036901425059447468
+PUT /api/pategory/upload/63fbc8024a9f8aa88a4891b5 404 1131 - 1.125 ms Fri, 03 Mar 2023 14:56:12 GMT multipart/form-data; boundary=--------------------------058738537406132227785263
+POST /api/pategory/upload/63fbc8484a9f8aa88a4891b9 404 1131 - 0.559 ms Fri, 03 Mar 2023 14:57:24 GMT multipart/form-data; boundary=--------------------------156279261955438381785611
+POST /api/category/upload/63fbc8484a9f8aa88a4891b9 404 1113 - 0.906 ms Fri, 03 Mar 2023 14:59:33 GMT multipart/form-data; boundary=--------------------------466473559794584252132544
+POST /api/category/upload/63fbc8484a9f8aa88a4891b9 404 1113 - 0.901 ms Fri, 03 Mar 2023 14:59:36 GMT multipart/form-data; boundary=--------------------------176787493967639859261208
+POST /api/category/upload/63fbc8484a9f8aa88a4891b9 404 1113 - 0.713 ms Fri, 03 Mar 2023 14:59:37 GMT multipart/form-data; boundary=--------------------------074870360874243455016384
+POST /api/category/upload/63fbc8484a9f8aa88a4891b9 404 1113 - 2.060 ms Fri, 03 Mar 2023 15:00:13 GMT multipart/form-data; boundary=--------------------------902847423346144818146106
+POST /api/product/upload/63fbc8484a9f8aa88a4891b9 200 368 - 3401.567 ms Fri, 03 Mar 2023 15:02:01 GMT multipart/form-data; boundary=--------------------------076408398783385251688283
+POST /api/product/upload/63fbc8484a9f8aa88a4891b9 404 1113 - 7.337 ms Fri, 03 Mar 2023 16:53:14 GMT multipart/form-data; boundary=--------------------------126037090971377783217679
+PUT /api/product/upload/63fbc8484a9f8aa88a4891b9 500 1151 - 2.980 ms Fri, 03 Mar 2023 16:53:30 GMT multipart/form-data; boundary=--------------------------887428082693068534106362
+PUT /api/product/upload/63fbc8484a9f8aa88a4891b9 500 391 - 2407.410 ms Fri, 03 Mar 2023 16:54:01 GMT multipart/form-data; boundary=--------------------------360510127169889462174904
+PUT /api/product/upload/63fbc8484a9f8aa88a4891b9 200 480 - 3385.795 ms Fri, 03 Mar 2023 16:56:25 GMT multipart/form-data; boundary=--------------------------707139948513427512173263
+PUT /api/blog/upload/6400ec1da626dccdbb164e4d 500 1052 - 38.212 ms Fri, 03 Mar 2023 17:13:03 GMT multipart/form-data; boundary=--------------------------692404661185094489027194
+PUT /api/blog/upload/6400ec1da626dccdbb164e4d - - - - ms Fri, 03 Mar 2023 17:17:12 GMT multipart/form-data; boundary=--------------------------393786669863802963873358
+PUT /api/blog/upload/6400ec1da626dccdbb164e4d 200 342 - 4613.911 ms Fri, 03 Mar 2023 17:23:13 GMT multipart/form-data; boundary=--------------------------398688840955182098553884
+POST /api/blog/create 200 387 - 47.963 ms Fri, 03 Mar 2023 17:28:04 GMT application/json
+PUT /api/blog/upload/64022e24a0ef5b20b6032423 200 451 - 2251.838 ms Fri, 03 Mar 2023 17:30:49 GMT multipart/form-data; boundary=--------------------------315916797550218058410894
+PUT /api/blog/upload/64022e24a0ef5b20b6032423 200 451 - 2107.635 ms Fri, 03 Mar 2023 17:31:27 GMT multipart/form-data; boundary=--------------------------633828118731893248820087
+POST /api/blog/create 200 389 - 51.575 ms Fri, 03 Mar 2023 17:35:05 GMT application/json
+PUT /api/blog/upload/64022fc96838538df8b9fa4c 200 453 - 2272.817 ms Fri, 03 Mar 2023 17:35:57 GMT multipart/form-data; boundary=--------------------------900496924797708337730526
+POST /api/auth/admin-login 500 273 - 25.227 ms Fri, 03 Mar 2023 18:14:17 GMT application/json
+POST /api/auth/admin-login 200 386 - 141.874 ms Fri, 03 Mar 2023 18:14:37 GMT application/json
+POST /api/auth/admin-login 500 255 - 107.546 ms Fri, 03 Mar 2023 18:14:46 GMT application/json
+POST /api/auth/admin-login 500 265 - 6.439 ms Fri, 03 Mar 2023 18:15:01 GMT application/json
+POST /api/auth/admin-login 500 253 - 18.508 ms Fri, 03 Mar 2023 18:15:44 GMT application/json
