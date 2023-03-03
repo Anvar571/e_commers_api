@@ -15,7 +15,7 @@ const blogSchema = new mongoose.Schema({
         required:true,
     },
     numViews:{
-        type:String,
+        type:Number,
         default: 0
     },
     isLiked:{
@@ -29,13 +29,13 @@ const blogSchema = new mongoose.Schema({
     likes: [
         {
             type: mongoose.Types.ObjectId,
-            ref: "user"
+            ref: "User"
         }
     ],
     disLikes: [
         {
             type: mongoose.Types.ObjectId,
-            ref: "user"
+            ref: "User"
         }
     ],
     image: {

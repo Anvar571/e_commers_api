@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { default: slugify } = require("slugify");
 const productModel = require("../models/productModel");
+const UserModel = require("../models/UserModel");
 const ValidationMongodb = require("../utils/Validation");
 
 const ProductCreate = asyncHandler(async (req, res) => {
@@ -100,6 +101,77 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
+const addWishList = asyncHandler(async (req, res) => {
+  const {_id} = req.user;
+  const {producId} = req.body;
+  try {
+    const user = await UserModel.findById(_id);
+    const alreadyadded = user.wishlist.find((id) => id.toString() === producId);
+    if (alreadyadded) {
+      const user = await UserModel.findByIdAndUpdate(
+        _id,
+        {
+          $pull: {wishlist: producId}
+        },
+        {new: true}
+      )
+      res.json({user});
+    }else {
+      const user = await UserModel.findByIdAndUpdate(
+        _id,
+        {
+          $push: {wishlist: producId}
+        },
+
+        {new: true}
+      )
+      res.json({user})
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+})
+
+const rating = asyncHandler(async (req,res) => {
+  const {_id} = req.user;
+  const {star, producId} = req.body;
+  const product = await productModel.findById(producId);
+  let alreadyRated = product.ratings.find((userId) => userId.postedby.toString() === _id.toString());
+
+  if (alreadyRated) {
+    const updateRating = await productModel.updateOne(
+      {
+        ratings: {$elemMatch: alreadyRated}
+      },
+      {
+        $set: {"ratings.$.star": star},
+      },
+      {
+        new: true
+      }
+    )
+    res.json({
+      updateRating
+    });
+  }else {
+    const rateProd = await productModel.findByIdAndUpdate(
+      producId,
+      {
+        $push: {
+          ratings: {
+            star,
+            postedby: _id
+          }
+        }
+      }, {
+        new: true
+      }
+    )
+    res.json(rateProd);
+  }
+})
+
+
 const searchProduct = asyncHandler(async (req, res) => {});
 
 module.exports = {
@@ -109,4 +181,6 @@ module.exports = {
   updateProduct,
   deleteProduct,
   searchProduct,
+  addWishList,
+  rating
 };
