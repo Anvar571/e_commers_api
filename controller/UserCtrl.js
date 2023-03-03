@@ -7,6 +7,9 @@ const jwt = require("jsonwebtoken");
 const { hashPassword, comparePassword } = require("../modules/bcrypt");
 const sendEmail = require("./emailCtrl");
 const crypto = require("crypto");
+const cartModule = require("../models/cartModule");
+const productModel = require("../models/productModel");
+const cuponModel = require("../models/cuponModel");
 
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -141,7 +144,6 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  ValidationMongodb(_id);
 
   try {
     const updateUser = await UserModel.findByIdAndUpdate(
@@ -150,6 +152,7 @@ const updateUser = asyncHandler(async (req, res) => {
         name: req.body.name,
         email: req.body.email,
         mobile: req.body.mobile,
+        address: req.body?.address || "",
       },
       { new: true }
     );
@@ -297,6 +300,100 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json(user);
 })
 
+const getallWishList = asyncHandler(async (req, res) => {
+  const {_id} = req.user;
+  try {
+    const wishList = await UserModel.findById(_id).populate("wishlist");
+    res.json({wishList})
+  } catch (error) {
+    throw new Error(error)
+  }
+})
+
+const userCart = asyncHandler(async (req, res, next) =>{
+  const {cart} =req.body;
+  const {_id} = req.user;
+  try {
+    let products = [];
+    const user = await UserModel.findById(_id);
+    const checkCart = await cartModule.findOne({orderBy: user._id});
+    if (checkCart) {
+      checkCart.remove();
+    }
+    for (let i=0; i < cart.length; i++){
+      let obj = {};
+      obj.product = cart[i]._id;
+      obj.count = cart[i].count;
+      obj.color = cart[i].color;
+      let getPrice = await productModel.findById(cart[i]._id).select("price").exec();
+      obj.price = getPrice.price;
+      products.push(obj);
+    }
+    
+    let totalCart = 0;
+    for (let i=0; i<products.length; i++){
+      totalCart = totalCart + products[i].price * products[i].count;
+    }
+    const newCart = await new cartModule({
+      products,
+      cartTotal: totalCart,
+      orderBy: user?._id
+    }).save();
+
+    res.json({newCart});
+  } catch (error) {
+    throw new Error(error);
+  }
+
+})
+
+const getUserCart = asyncHandler(async (req, res) => {
+  const {_id} = req.user;
+  try {
+    const cart = await cartModule.findOne({orderBy: _id})
+    .populate("products.product", "_id title price totalDisCount");
+    res.json(cart)
+  } catch (error) {
+    throw new Error(error)
+  }
+})
+
+const emptyCart = asyncHandler(async (req, res) => {
+  const {_id} = req.user;
+  try {
+    const user = await UserModel.findOne({_id});
+    const cart = await cartModule.findByIdAndRemove({orderBy: user._id});
+    res.json(cart);
+  } catch (error) {
+    throw new Error(error);
+  }
+})
+
+const applyCoupon = asyncHandler(async (req, res) => {
+  const {coupon} = req.body;
+  const {_id} = req.user;
+
+  const validateCupon = await cuponModel.findOne({name: coupon});
+  if (validateCupon === null) throw new Error("Invalid Coupon");
+
+  const user = await UserModel.findById(_id);
+
+let {cartTotal} = await cartModule.findOne({
+    orderBy: user._id
+  }).populate("products.product");
+
+  let totalDisCount = (
+    cartTotal - (cartTotal * validateCupon.discount) / 100
+    ).toFixed(2);
+
+    await cartModule.findOneAndUpdate(
+      {orderBy: user._id},
+      {totalDisCount},
+      {new: true}
+    )
+    res.json(totalDisCount)
+})
+
 module.exports = {
   createUser,
   loginUserCtrl,
@@ -312,5 +409,10 @@ module.exports = {
   updatePassword,
   forget_password,
   resetPassword,
-  adminLogin
+  adminLogin,
+  getallWishList,
+  userCart,
+  getUserCart,
+  emptyCart,
+  applyCoupon
 };

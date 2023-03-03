@@ -9,7 +9,8 @@ var cuponSchema = new mongoose.Schema({
     },
     expiry: {
         type: Date,
-        required: true
+        required: true,
+        default: Date.now()
     },
     discount: {
         type: Number,
